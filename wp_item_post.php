@@ -22,12 +22,14 @@
  * @param string $item_url
  * @param string $item_image
  * @param string $item_desc
+ * @param string $email
+ * @param array $category
  *
  * @return int|false success: postid error :false
  */
-function create_post($title,$content,$status = 'draft',$author = '', $item_name = '',
+function item_post_create_post($title,$content,$status = 'draft',$author = '', $item_name = '',
 					$item_price = '',$item_source,$item_url = '',$item_image = '',
-					$item_desc = '',$email = ''){
+					$item_desc = '',$email = '',$category = array()){
 	$post = array(
 		  'ID'             => '' ,// Are you updating an existing post?
 		  'post_content'   => $content, // The full text of the post.
@@ -48,7 +50,7 @@ function create_post($title,$content,$status = 'draft',$author = '', $item_name 
 		  'post_date'      => date('Y-m-d H:i:s'), // The time post was made.
 		  'post_date_gmt'  => gmdate('Y-m-d H:i:s'),// The time post was made, in GMT.
 		  //'comment_status' => [ 'closed' | 'open' ] // Default is the option 'default_comment_status', or 'closed'.
-		  //'post_category'  => [ array(<category id>, ...) ] // Default empty.
+		  'post_category'  => $category // Default empty.
 		  //'tags_input'     => [ '<tag>, <tag>, ...' | array ] // Default empty.
 		  //'tax_input'      => [ array( <taxonomy> => <array | string> ) ] // For custom taxonomies. Default empty.
 		  //'page_template'  => [ <string> ] // Requires name of template file, eg template.php. Default empty.
@@ -77,7 +79,19 @@ function create_post($title,$content,$status = 'draft',$author = '', $item_name 
 
 }
 
-
+function item_post_add_post_read_count($post_id,$count = 1){
+	$meta_key_name = 'item_post_read_count';
+	$ret = get_post_meta($post_id,$meta_key_name,true);
+	$number = 0;
+	if(empty($ret)){
+		$number = $count;
+		add_post_meta($post_id,$meta_key_name,$number,true) || update_post_meta($post_id,$meta_key_name,$number);
+	}else{
+		$number = $ret + $count;
+		update_post_meta($post_id,$meta_key_name,$number);
+	}
+	return $number;
+}
 
 
 /**
