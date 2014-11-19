@@ -41,7 +41,8 @@ class JSON_API_ITEMPOST_Controller {
 		if(empty($post_id)){
 			return array('status'=>'fail','data'=>'missing param');
 		}
-		return item_post_add_post_read_count($post_id);
+		$ret = item_post_add_post_read_count($post_id);
+		return array('status'=>'ok','data'=>$ret);
 	}
 
 }
